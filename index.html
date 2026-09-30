@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Evaluación Operativa: Sistema Adversarial (Leyes 8933, 9322 y 9788)</title>
+  <title>Evaluación Técnico-Operativa: Sistema Adversarial (Leyes 8933, 9322 y 9788)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
@@ -320,14 +320,16 @@
           <label for="jerarquia">Jerarquía / Escalafón *</label>
           <select id="jerarquia" required>
             <option value="">Seleccione jerarquía...</option>
+            <option value="Oficial Subayudante">Oficial Subayudante</option>
             <option value="Oficial Ayudante">Oficial Ayudante</option>
-            <option value="Oficial Subinspector">Oficial Subinspector</option>
-            <option value="Oficial Inspector">Oficial Inspector</option>
+            <option value="Oficial Auxiliar">Oficial Auxiliar</option>
             <option value="Oficial Principal">Oficial Principal</option>
             <option value="Subcomisario">Subcomisario</option>
             <option value="Comisario">Comisario</option>
             <option value="Comisario Principal">Comisario Principal</option>
-            <option value="Comisario Mayor / General">Comisario Mayor / General</option>
+            <option value="Comisario Inspector">Comisario Inspector</option>
+            <option value="Comisario Mayor">Comisario Mayor</option>
+            <option value="Comisario General">Comisario General</option>
           </select>
         </div>
         <div class="form-group">
@@ -364,7 +366,7 @@
 </div>
 
 <script>
-  // URL de tu Web App de Google Apps Script ya configurada
+  // Endpoint de Google Apps Script configurado
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx903p0E0UaK7HETPczwNJjB2A_2uqE98EQ1dHXewyD1ToYLLXuLWHoSEM_rpVwe6FWog/exec";
 
   const startTime = new Date();
@@ -697,7 +699,7 @@
       statusMsg.textContent = "✓ Registro completado y transmitido con éxito.";
     } catch (err) {
       statusMsg.className = "status-msg err";
-      statusMsg.textContent = "⚠️️ El examen se evaluó, pero hubo una demora en la sincronización con Google Sheets.";
+      statusMsg.textContent = "⚠ El examen se evaluó, pero hubo una demora en la sincronización con Google Sheets.";
     }
 
     // Mostrar Resultados en Pantalla
