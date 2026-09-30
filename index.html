@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evaluación Operativa: Sistema Adversarial (Leyes 8933, 9322 y 9788)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0F172A;
+      --primary-accent: #1E3A8A;
+      --highlight: #2563EB;
+      --accent: #B45309;
+      --success: #15803D;
+      --error: #B91C1C;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --border: #E2E8F0;
+      --text: #1E293B;
+      --text-muted: #64748B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, #1e293b 100%);
+      color: #FFFFFF;
+      padding: 28px 24px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+      position: relative;
+    }
+
+    header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      color: #94A3B8;
+      font-size: 0.92rem;
+    }
+
+    .badge-bar {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #F1F5F9;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    .card h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.15rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input, .form-group select {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: var(--text);
+      background-color: #F8FAFC;
+      transition: all 0.2s;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--highlight);
+      background-color: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .question-block {
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .question-block:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .q-header {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 12px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .q-num {
+      background: #E2E8F0;
+      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      height: fit-content;
+      margin-top: 2px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .option-label:hover {
+      background-color: #F1F5F9;
+      border-color: #CBD5E1;
+    }
+
+    .option-label input[type="radio"] {
+      margin-top: 3px;
+      accent-color: var(--highlight);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary-accent);
+      color: #FFFFFF;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 8px rgba(30, 58, 138, 0.2);
+    }
+
+    .btn-submit:hover {
+      background: #1e40af;
+    }
+
+    .btn-submit:disabled {
+      background: #94A3B8;
+      cursor: not-allowed;
+    }
+
+    #resultsCard {
+      display: none;
+    }
+
+    .score-banner {
+      text-align: center;
+      padding: 24px;
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .score-banner h3 {
+      font-size: 1.1rem;
+      color: #1E3A8A;
+      margin-bottom: 6px;
+    }
+
+    .score-banner .score-num {
+      font-size: 3rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .feedback-item {
+      padding: 14px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border-left: 5px solid transparent;
+      font-size: 0.88rem;
+    }
+
+    .feedback-item.correct {
+      background-color: #F0FDF4;
+      border-left-color: var(--success);
+    }
+
+    .feedback-item.incorrect {
+      background-color: #FEF2F2;
+      border-left-color: var(--error);
+    }
+
+    .feedback-item .q-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .feedback-item .explanation {
+      margin-top: 6px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .status-msg {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    
+    .status-msg.ok { color: var(--success); }
+    .status-msg.err { color: var(--error); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Evaluación Técnico-Operativa: Sistema Adversarial</h1>
+    <p>Policía de Tucumán • Leyes 8933, 9322 y 9788</p>
+    <div class="badge-bar">
+      <span class="badge">20 Preguntas de Criterio</span>
+      <span class="badge">Escala de 1 a 10</span>
+      <span class="badge">Registro Automático en Google Sheets</span>
+    </div>
+  </header>
+
+  <!-- FORMULARIO DE EVALUACIÓN -->
+  <form id="quizForm">
+    <!-- DATOS DEL OFICIAL -->
+    <div class="card">
+      <h2>1. Identificación del Funcionario Policial</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nombre">Nombre y Apellido *</label>
+          <input type="text" id="nombre" required placeholder="Ej: Sergio E. Ponce">
+        </div>
+        <div class="form-group">
+          <label for="jerarquia">Jerarquía / Escalafón *</label>
+          <select id="jerarquia" required>
+            <option value="">Seleccione jerarquía...</option>
+            <option value="Oficial Ayudante">Oficial Ayudante</option>
+            <option value="Oficial Subinspector">Oficial Subinspector</option>
+            <option value="Oficial Inspector">Oficial Inspector</option>
+            <option value="Oficial Principal">Oficial Principal</option>
+            <option value="Subcomisario">Subcomisario</option>
+            <option value="Comisario">Comisario</option>
+            <option value="Comisario Principal">Comisario Principal</option>
+            <option value="Comisario Mayor / General">Comisario Mayor / General</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="dni">DNI / Credencial *</label>
+          <input type="text" id="dni" required placeholder="Ej: 32456789">
+        </div>
+        <div class="form-group">
+          <label for="destino">Destino / Dependencia Policial *</label>
+          <input type="text" id="destino" required placeholder="Ej: Comisaría Seccional 1ra / DGCyDE">
+        </div>
+      </div>
+    </div>
+
+    <!-- PREGUNTAS -->
+    <div class="card">
+      <h2>2. Examen de Casuística y Dinámica Procesal</h2>
+      <div id="questionsContainer"></div>
+    </div>
+
+    <button type="submit" id="btnSubmit" class="btn-submit">Finalizar Examen y Enviar Calificación</button>
+    <div id="statusMsg" class="status-msg"></div>
+  </form>
+
+  <!-- RESULTADOS -->
+  <div id="resultsCard" class="card">
+    <h2>3. Devolución de Resultados y Fundamentación</h2>
+    <div class="score-banner">
+      <h3>Nota Final Obtenida</h3>
+      <div class="score-num" id="scoreDisplay">0.0</div>
+      <p id="scoreDetails" style="font-size: 0.9rem; color: #475569;"></p>
+    </div>
+    <div id="feedbackContainer"></div>
+  </div>
+</div>
+
+<script>
+  // URL de tu Web App de Google Apps Script ya configurada
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx903p0E0UaK7HETPczwNJjB2A_2uqE98EQ1dHXewyD1ToYLLXuLWHoSEM_rpVwe6FWog/exec";
+
+  const startTime = new Date();
+
+  const questions = [
+    {
+      id: 1,
+      q: "En el sistema adversarial (Ley 8933), si el acta policial labrada en el lugar del hecho no es ratificada oralmente por el oficial actuante en juicio:",
+      options: [
+        "Conserva plena validez probatoria si cuenta con la firma de dos testigos hábiles.",
+        "Carece de valor probatorio por sí misma, pues el legajo sirve para investigar y la prueba se produce oralmente en juicio.",
+        "Puede ser incorporada por lectura directa sin objeción alguna de la defensa técnica.",
+        "Tiene valor probatorio presuntivo que sólo puede ser desvirtuado mediante querella de falsedad."
+      ],
+      correct: 1,
+      exp: "Bajo la Ley 8933 rige la oralidad, contradicción e inmediación. El acta por sí sola no es prueba tarifada; el funcionario debe sostener lo actuado bajo interrogatorio en audiencia pública."
+    },
+    {
+      id: 2,
+      q: "Durante una patrulla preventiva nocturna, un oficial nota a un masculino caminando con capucha, mirando reiteradamente hacia los lados y cambiando de vereda. El oficial decide aprehenderlo de inmediato por considerarlo 'en actitud altamente sospechosa'. Conforme la Ley 8933 y su modificatoria Ley 9322, dicha aprehensión es:",
+      options: [
+        "Completamente legítima, amparada en las facultades de prevención policial y el olfato policial.",
+        "Ilegítima, pues la aprehensión sin orden judicial exige supuestos legales estrictos (flagrancia o peligro cierto de fuga) y no meras suposiciones subjetivas.",
+        "Válida siempre que se comunique al fiscal dentro de las 4 horas siguientes.",
+        "Legítima únicamente si se lo traslada a la base para verificación de antecedentes hasta por 24 horas."
+      ],
+      correct: 1,
+      exp: "La Ley 9322 prohíbe las detenciones basadas en el 'olfato policial' o la mera subjetividad. La aprehensión sin orden requiere flagrancia material, cuasiflagrancia o fuga inminente."
+    },
+    {
+      id: 3,
+      q: "En un control vehicular de rutina, se detecta un rodado con pedido de secuestro. Al requisar el baúl, el oficial encuentra una mochila con 3 envoltorios de cocaína compacta. ¿Cuál es el tratamiento procesal adecuado de la cadena de custodia?",
+      options: [
+        "El oficial secuestra la sustancia, la lleva en el móvil a la comisaría y convoca a la fiscalía para el pesaje al día siguiente.",
+        "Debe individualizar inmediatamente el elemento, consignar quién lo halló, quién lo manipuló, cómo se embaló, rotuló y precintó, preservando su trazabilidad estricta.",
+        "No requiere rótulo formal si se labra un acta detallada firmada únicamente por el chofer del patrullero.",
+        "Basta con fotografiar los envoltorios con el teléfono celular personal del preventor."
+      ],
+      correct: 1,
+      exp: "La cadena de custodia responde a: ¿Dónde estaba? ¿Quién lo halló? ¿Quién lo levantó? ¿Cómo se embaló? Cualquier rotura de la trazabilidad habilita a la defensa a pedir la exclusión probatoria."
+    },
+    {
+      id: 4,
+      q: "Un ciudadano llega a la comisaría a radicar una denuncia por amenazas verbales sin lesiones ocurridas hace una semana. El oficial de guardia le dice: 'Vaya directamente a la Unidad Fiscal porque aquí solo tomamos hechos con autores aprehendidos'. De acuerdo con la Ley 8933 y su modificatoria Ley 9788 (art. 146):",
+      options: [
+        "El oficial actuó correctamente, pues las comisarías solo atienden emergencias y delitos flagrantes.",
+        "El oficial actuó de forma antirreglamentaria: la Policía tiene la obligación de recibir toda denuncia de delito de acción pública, labrar el acta y comunicarla de inmediato al fiscal.",
+        "Solo es obligatorio recibirla si el denunciante se presenta patrocinado por un abogado matriculado.",
+        "El oficial puede negarse si no cuenta con personal disponible para tomarle declaración por escrito."
+      ],
+      correct: 1,
+      exp: "La Ley 9788 refuerza que la denuncia por delito de acción pública puede formalizarse ante el fiscal o la policía, siendo deber ineludible de la autoridad policial recepcionarla y elevarla sin dilaciones."
+    },
+    {
+      id: 5,
+      q: "En audiencia oral de control de acusación, el defensor técnico le pregunta al oficial: '¿Usted vio al imputado disparar el arma?'. El policía debe responder:",
+      options: [
+        "'Sí, porque todos en el barrio confirmaron que fue él y tiene antecedentes penales'.",
+        "Limitarse con precisión a lo que percibió con sus propios sentidos: si llegó después, aclarar que no lo vio y que su conocimiento del autor surge del relato de un testigo.",
+        "'Es una deducción lógica basada en mi experiencia técnica de 15 años en la fuerza'.",
+        "Rehusarse a responder amparándose en el secreto de sumario judicial."
+      ],
+      correct: 1,
+      exp: "En el sistema adversarial es terminante la diferencia entre el testimonio directo y el de oídas (hearsay). El policía jamás debe completar su testimonio con deducciones o suposiciones."
+    },
+    {
+      id: 6,
+      q: "¿Cuál de las siguientes afirmaciones define con exactitud la diferencia entre la Apertura de Investigación y la Formalización de la Investigación en la Ley 8933?",
+      options: [
+        "La Apertura es un acto netamente judicial en audiencia oral y la Formalización es un decreto policial reservado.",
+        "La Apertura la dispone internamente el Fiscal cuando conforma el legajo; la Formalización se realiza en audiencia oral ante el Juez de Garantías para imputar formalmente el hecho.",
+        "Son términos sinónimos que refieren al momento exacto en que ingresa el acta de secuestro al juzgado.",
+        "La Formalización la declara el comisario de turno al recibir al aprehendido."
+      ],
+      correct: 1,
+      exp: "No debe confundirse la gestión fiscal interna (Apertura y formación del legajo) con el acto jurisdiccional público de comunicación y garantía (Formalización ante el Juez de Garantías)."
+    },
+    {
+      id: 7,
+      q: "En una causa por lesiones leves agravadas en contexto de género, el oficial a cargo omite notificar inmediatamente a la Unidad Fiscal especializada y retiene las actuaciones en la seccional durante 72 horas para 'reunir más testimonios'. Este proceder genera:",
+      options: [
+        "Una investigación más sólida, pues el Código alienta la autosuficiencia instructoria policial.",
+        "Una gravísima falta procesal y funcional, ya que bajo la Ley 8933 la dirección jurídica de la investigación corresponde de modo exclusivo al Ministerio Público Fiscal.",
+        "La nulidad automática e insanable de todo el proceso sin posibilidad de saneamiento.",
+        "Un trámite ordinario amparado en los plazos tradicionales de la Ley 6203."
+      ],
+      correct: 1,
+      exp: "Bajo el paradigma acusatorio, la Policía actúa como auxilio y bajo directa dirección del fiscal. No existe ya la 'instrucción policial autónoma' con plazos discrecionales."
+    },
+    {
+      id: 8,
+      q: "Al arribar al escenario de un homicidio con disparos de arma de fuego, el primer móvil observa a la víctima tendida, tres vainas servidas sobre la vereda y vecinos aglomerados. La PRIMERA acción imperativa del primer funcionario policial interviniente es:",
+      options: [
+        "Recoger las vainas de inmediato antes de que la multitud las pise o se las lleve.",
+        "Constatar la necesidad de auxilio médico vital y aislar/perimetrar de inmediato la escena para evitar la contaminación de evidencias.",
+        "Comenzar a tomar declaraciones por escrito a los vecinos presentes.",
+        "Ingresar al domicilio del presunto autor sin orden para registrar si hay cómplices escondidos."
+      ],
+      correct: 1,
+      exp: "La secuencia táctica no negociable es: Seguridad y auxilio vital > Preservación y aislamiento estricto > Individualización de testigos > Comunicación fiscal. Jamás levantar evidencias sin peritos."
+    },
+    {
+      id: 9,
+      q: "¿Por qué en el sistema acusatorio adversarial se afirma categóricamente que 'el Juez ya no investiga'?",
+      options: [
+        "Porque los jueces de garantías delegaron el trabajo administrativo para dedicarse a redactar condenas.",
+        "Porque para garantizar la imparcialidad objetiva, quien juzga y decide sobre garantías constitucionales no puede asumir el rol requirente ni colectar evidencia.",
+        "Porque todas las funciones investigativas pasaron exclusivamente a la Dirección de Investigaciones de la Policía.",
+        "Porque el Juez solo interviene una vez que se dicta la sentencia en el debate oral."
+      ],
+      correct: 1,
+      exp: "La piedra angular del sistema adversarial es la separación estricta de funciones: el Fiscal acusa e investiga, la Defensa contradice y el Juez de Garantías resuelve con absoluta imparcialidad."
+    },
+    {
+      id: 10,
+      q: "Un oficial interroga informalmente a un sospechoso aprehendido dentro del móvil policial sin presencia de su abogado, logrando que admita dónde escondió el arma utilizada. Dicha admisión:",
+      options: [
+        "Puede ser volcada en el acta policial como confesión espontánea plenamente utilizable en juicio.",
+        "Es nula de nulidad absoluta y carece de todo valor probatorio por violación a la garantía constitucional contra la autoincriminación forzada.",
+        "Es válida siempre que el oficial la ratifique bajo juramento en la audiencia oral.",
+        "Habilita al juez a dictar prisión preventiva de forma inmediata."
+      ],
+      correct: 1,
+      exp: "La policía no interroga al imputado. Cualquier manifestación autoinculpatoria obtenida sin las debidas garantías y sin asistencia letrada es inadmisible y vulnera el debido proceso."
+    },
+    {
+      id: 11,
+      q: "Durante una requisa de urgencia en la vía pública conforme el régimen procesal tucumano, para que el secuestro de un elemento delictivo no sea tachado de nulo por la defensa, el personal policial debe acreditar:",
+      options: [
+        "Que el oficial tenía 'corazonada' de que el sospechoso portaba algo ilícito.",
+        "Motivos previos, objetivos y razonables que justificaron la intervención, documentando con precisión lugar, tiempo, testigos y modo.",
+        "Que el procedimiento fue autorizado telefónicamente por un superior jerárquico de la fuerza.",
+        "Basta con que el resultado de la requisa haya sido positivo para convalidar cualquier defecto previo."
+      ],
+      correct: 1,
+      exp: "El éxito del hallazgo no convalida un procedimiento ilegítimo. Deben existir circunstancias previas y objetivas documentadas que justifiquen la medida excepcional sin orden judicial previa."
+    },
+    {
+      id: 12,
+      q: "¿Cuál es el rol de la Defensa técnica dentro del modelo adversarial frente a la evidencia policial?",
+      options: [
+        "Mero observador pasivo que debe aguardar al final del debate oral para manifestarse.",
+        "Sujeto procesal con plenas facultades de controlar, contradecir, exigir trazabilidad de evidencias e incluso desarrollar actividad autónoma de investigación.",
+        "Un auxiliar del tribunal subordinado a los requerimientos de la fiscalía actuante.",
+        "Solo puede revisar las actas con expresa autorización del jefe de la seccional policial."
+      ],
+      correct: 1,
+      exp: "El sistema adversarial sitúa a la defensa y al fiscal en pie de igualdad de armas: la defensa tiene potestad para contradecir, fiscalizar las pruebas y proponer su propia teoría del caso."
+    },
+    {
+      id: 13,
+      q: "En el marco de la Ley 8933, cuando un oficial de policía comparece a declarar como testigo en un juicio oral:",
+      options: [
+        "Puede leer íntegramente de principio a fin su informe policial para evitar contradicciones.",
+        "Debe declarar oralmente sobre lo que percibió y solo puede consultar sus notas o actas previas para refrescar memoria o superar contradicciones, previa autorización del tribunal.",
+        "No puede consultar ningún documento bajo ninguna circunstancia procesal.",
+        "Su testimonio es reemplazado por la simple lectura del sumario preventivo."
+      ],
+      correct: 1,
+      exp: "En el debate rige el principio de oralidad. Las declaraciones previas o actas policiales no se leen íntegramente: solo se utilizan bajo reglas de litigación para refrescar la memoria o evidenciar contradicciones."
+    },
+    {
+      id: 14,
+      q: "Al producirse una persecución continua tras un robo con arma que culmina con el sospechoso refugiándose en el patio de una vivienda ajena:",
+      options: [
+        "La policía no puede ingresar bajo ningún concepto y debe esperar la orden de allanamiento judicial aunque el sujeto escape por los techos.",
+        "La policía se encuentra facultada legalmente para ingresar sin orden previa por configurarse un supuesto estricto de persecución inmediata de delito flagrante.",
+        "Solo puede ingresar si el dueño de la finca firma previamente una autorización por escrito ante dos testigos.",
+        "Debe convocar al cuerpo de bomberos para realizar la irrupción perimetral."
+      ],
+      correct: 1,
+      exp: "La persecución continua de quien huye tras cometer un delito flagrante habilita legalmente el ingreso en persecución sin orden de allanamiento previa, con posterior comunicación inmediata."
+    },
+    {
+      id: 15,
+      q: "Si en un peritaje balístico se comprueba que el sobre con el proyectil secuestrado tenía el precinto roto y sin constancia de quién tuvo acceso en el depósito de la seccional:",
+      options: [
+        "No tiene relevancia jurídica si el perito balístico confirma que la bala pertenece al calibre secuestrado.",
+        "Se genera una grave fisura de la cadena de custodia que puede llevar a la exclusión probatoria por falta de autenticidad e integridad del elemento.",
+        "El tribunal subsana el error tomando declaración jurada al jefe de la comisaría.",
+        "Se reemplaza automáticamente el proyectil con las fotografías agregadas al legajo."
+      ],
+      correct: 1,
+      exp: "La cadena de custodia garantiza la mismidad del objeto. Si el precinto fue vulnerado o no hay trazabilidad de acceso, el juez puede declarar la exclusión probatoria del elemento."
+    },
+    {
+      id: 16,
+      q: "Respecto a las medidas de coerción privativas de libertad en el Código de Tucumán (Ley 8933):",
+      options: [
+        "La prisión preventiva es la consecuencia automática de cualquier aprehensión policial.",
+        "La libertad durante el proceso es la regla procesal básica; las restricciones son excepcionales y deben ser solicitadas por el fiscal y fundamentadas ante el Juez.",
+        "El comisario puede disponer la detención provisoria de un imputado hasta por 15 días si lo considera peligroso.",
+        "El plazo de aprehensión policial sin control judicial puede prorrogarse indefinidamente mediante informe fundado."
+      ],
+      correct: 1,
+      exp: "En el modelo adversarial la libertad es el principio rector. Toda privación o limitación de libertad responde a riesgos procesales (fuga o entorpecimiento) evaluados en audiencia oral."
+    },
+    {
+      id: 17,
+      q: "Un preventor redacta en su actuación: 'Se procedió al secuestro del cuchillo homicida utilizado por el encartado para degollar a la víctima'. En el sistema adversarial, dicha afirmación es técnicamente errónea porque:",
+      options: [
+        "El preventor está adelantando una calificación y una conclusión técnico-fáctica que corresponde probar a la Fiscalía y valorar al Juez; debió describirlo objetivamente.",
+        "Debería haber utilizado la palabra 'puñal' en lugar de 'cuchillo' según el Código Penal.",
+        "En el acta está terminantemente prohibido describir los objetos secuestrados.",
+        "Solo los médicos forenses pueden levantar armas blancas en la vía pública."
+      ],
+      correct: 0,
+      exp: "El funcionario debe ser escrupulosamente objetivo: 'se procedió al secuestro de un arma blanca de hoja metálica con manchas presuntamente hemáticas'. Calificarla de 'arma homicida' es una conclusión no verificada."
+    },
+    {
+      id: 18,
+      q: "En una audiencia oral de formalización de la investigación y pedido de prisión preventiva, ¿quién expone los fundamentos tácticos y fácticos de la intervención policial?",
+      options: [
+        "El comisario general de la regional mediante un escrito elevado con 24 horas de antelación.",
+        "El fiscal a cargo, basándose en la información objetiva, actas y constancias suministradas por la policía en el legajo fiscal.",
+        "El juez de garantías interroga en privado al denunciante para contrastar con la versión policial.",
+        "La policía cuenta con un abogado defensor propio que litiga contra el defensor público del imputado."
+      ],
+      correct: 1,
+      exp: "El fiscal es quien litiga y sostiene oralmente la pretensión punitiva frente al juez. Por ende, la solidez del fiscal depende enteramente de la precisión y calidad del legajo remitido por la policía."
+    },
+    {
+      id: 19,
+      q: "¿Qué implica la garantía de 'Inmediación' en las audiencias penales de la Ley 8933?",
+      options: [
+        "Que la policía debe llegar al lugar del hecho en menos de 5 minutos desde el llamado del 911.",
+        "Que el Juez debe percibir directamente y sin intermediarios la producción de la prueba y los argumentos orales de las partes enfrentadas.",
+        "Que los trámites deben realizarse en la comisaría más próxima al domicilio del imputado.",
+        "Que las resoluciones judiciales deben dictarse de forma escrita e inapelable en el mismo acto."
+      ],
+      correct: 1,
+      exp: "La inmediación procesal significa que el magistrado toma contacto directo y en vivo con las partes, los testigos, los peritos y los elementos de prueba en la audiencia."
+    },
+    {
+      id: 20,
+      q: "'El sistema adversarial no le pide al policía que sea abogado; le pide que sea un excelente funcionario policial'. Esto significa operativamente que su tarea central es:",
+      options: [
+        "Interpretar jurisprudencia y redactar los autos de procesamiento para aliviar la tarea del fiscal.",
+        "Observar con objetividad, preservar el lugar y la evidencia, documentar sin suposiciones, comunicar de inmediato al fiscal y actuar con apego irrestricto a la legalidad procesal.",
+        "Garantizar que todo sospechoso aprehendido confiese el hecho antes de ser remitido a tribunales.",
+        "Limitarse únicamente a cumplir órdenes verbales sin dejar constancia escrita de las circunstancias del procedimiento."
+      ],
+      correct: 1,
+      exp: "El éxito del sistema descansa en la excelencia operativa de los primeros minutos: preservación rigurosa de evidencias, observación limpia y documentación fidedigna pasible de ser defendida en juicio oral."
+    }
+  ];
+
+  // Renderizar las preguntas
+  const container = document.getElementById("questionsContainer");
+  questions.forEach((q, idx) => {
+    const qDiv = document.createElement("div");
+    qDiv.className = "question-block";
+    qDiv.innerHTML = `
+      <div class="q-header">
+        <span class="q-num">${idx + 1}</span>
+        <span>${q.q}</span>
+      </div>
+      <div class="options">
+        ${q.options.map((opt, oIdx) => `
+          <label class="option-label">
+            <input type="radio" name="q_${q.id}" value="${oIdx}" required>
+            <span>${opt}</span>
+          </label>
+        `).join("")}
+      </div>
+    `;
+    container.appendChild(qDiv);
+  });
+
+  // Manejador del Formulario
+  const form = document.getElementById("quizForm");
+  const btnSubmit = document.getElementById("btnSubmit");
+  const statusMsg = document.getElementById("statusMsg");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = "Procesando y registrando examen...";
+    statusMsg.className = "status-msg";
+    statusMsg.textContent = "Enviando resultados a la planilla central...";
+
+    let correctCount = 0;
+    const feedbackList = [];
+
+    questions.forEach((q) => {
+      const selected = form.querySelector(`input[name="q_${q.id}"]:checked`);
+      const val = selected ? parseInt(selected.value) : -1;
+      const isCorrect = (val === q.correct);
+      if (isCorrect) correctCount++;
+
+      feedbackList.push({
+        num: q.id,
+        question: q.q,
+        isCorrect: isCorrect,
+        userAnswer: val >= 0 ? q.options[val] : "Sin respuesta",
+        correctAnswer: q.options[q.correct],
+        exp: q.exp
+      });
+    });
+
+    // Escala del 1 al 10 (base 1 punto, hasta 10 con 20/20)
+    const score = Number((1 + (correctCount / questions.length) * 9).toFixed(1));
+
+    // Tiempo transcurrido
+    const endTime = new Date();
+    const diffMins = Math.round((endTime - startTime) / 60000);
+    const tiempoStr = `${diffMins} min`;
+
+    const payload = {
+      fecha: new Date().toLocaleString("es-AR", { timeZone: "America/Argentina/Tucuman" }),
+      nombre: document.getElementById("nombre").value.trim(),
+      jerarquia: document.getElementById("jerarquia").value,
+      dni: document.getElementById("dni").value.trim(),
+      destino: document.getElementById("destino").value.trim(),
+      aciertos: correctCount,
+      nota: score,
+      tiempo: tiempoStr
+    };
+
+    // Envío por POST a Google Sheets
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      statusMsg.className = "status-msg ok";
+      statusMsg.textContent = "✓ Registro completado y transmitido con éxito.";
+    } catch (err) {
+      statusMsg.className = "status-msg err";
+      statusMsg.textContent = "⚠️️ El examen se evaluó, pero hubo una demora en la sincronización con Google Sheets.";
+    }
+
+    // Mostrar Resultados en Pantalla
+    form.style.display = "none";
+    const resultsCard = document.getElementById("resultsCard");
+    const scoreDisplay = document.getElementById("scoreDisplay");
+    const scoreDetails = document.getElementById("scoreDetails");
+    const fbContainer = document.getElementById("feedbackContainer");
+
+    resultsCard.style.display = "block";
+    scoreDisplay.textContent = score.toFixed(1);
+    scoreDetails.textContent = `Aciertos: ${correctCount} de ${questions.length} preguntas (${Math.round((correctCount/questions.length)*100)}%)`;
+
+    fbContainer.innerHTML = feedbackList.map(item => `
+      <div class="feedback-item ${item.isCorrect ? 'correct' : 'incorrect'}">
+        <div class="q-title">${item.num}. ${item.question}</div>
+        <div><strong>Su respuesta:</strong> ${item.userAnswer} ${item.isCorrect ? '✅' : '❌'}</div>
+        ${!item.isCorrect ? `<div style="color: var(--success); margin-top: 2px;"><strong>Respuesta correcta:</strong> ${item.correctAnswer}</div>` : ''}
+        <div class="explanation"><strong>Fundamento normativo:</strong> ${item.exp}</div>
+      </div>
+    `).join("");
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>
